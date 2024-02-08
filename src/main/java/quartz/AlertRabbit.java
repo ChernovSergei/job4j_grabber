@@ -16,7 +16,7 @@ public class AlertRabbit {
     private static Connection connection;
 
     private static void init() {
-        try(InputStream in = AlertRabbit.class.getClassLoader().getResourceAsStream("db/liquibase.properties")) {
+        try (InputStream in = AlertRabbit.class.getClassLoader().getResourceAsStream("db/liquibase.properties")) {
             Properties config = new Properties();
             config.load(in);
             Class.forName(config.getProperty("driver-class-name"));
