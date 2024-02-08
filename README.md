@@ -2,4 +2,8 @@
 
 ## About the project
 
-The program reads java developer vacancies from a web page and store them into a database
+The program: 
+* reads five java developer vacancies from first five web pages.
+* reads data every minute.
+* stores data (position title; vacancy link; vacancy description and creation date) into a database.
+* converts dates into format "yyyy-mm-ddТhh:mm:ss".
