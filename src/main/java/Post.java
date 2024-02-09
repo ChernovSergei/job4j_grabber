@@ -62,6 +62,7 @@ public class Post {
 
     @Override
     public int hashCode() {
+
         int result = 1;
         result = 31 * result + ((title == null) ? 0 : title.hashCode());
         result = 31 * result + ((description == null) ? 0 : description.hashCode());
