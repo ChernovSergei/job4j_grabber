@@ -13,9 +13,9 @@ import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 
 public class AlertRabbit {
-    private static Connection connection;
 
-    private static void init() {
+    public static void main(String[] args) {
+        Connection connection;
         try (InputStream in = AlertRabbit.class.getClassLoader().getResourceAsStream("db/liquibase.properties")) {
             Properties config = new Properties();
             config.load(in);
@@ -25,14 +25,6 @@ public class AlertRabbit {
                     config.getProperty("username"),
                     config.getProperty("password")
             );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void main(String[] args) {
-        try {
-            init();
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
             scheduler.start();
             JobDataMap data = new JobDataMap();
@@ -50,10 +42,10 @@ public class AlertRabbit {
             scheduler.scheduleJob(job, trigger);
             Thread.sleep(Integer.parseInt(getInterval().getProperty("rabbit.sleep_interval")));
             scheduler.shutdown();
-        } catch (SchedulerException e) {
-            e.printStackTrace();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
