@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 public class AlertRabbit {
 
     public static void main(String[] args) {
+
         try (InputStream in = AlertRabbit.class.getClassLoader().getResourceAsStream("db/liquibase.properties")) {
             Properties config = new Properties();
             config.load(in);
