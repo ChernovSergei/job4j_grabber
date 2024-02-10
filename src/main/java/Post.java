@@ -57,16 +57,15 @@ public class Post {
             return false;
         }
         Post post = (Post) o;
-        return title.equals(post.getTitle()) && description.equals(post.getDescription()) && created.equals(post.getCreated());
+        return id == post.getId() && link.equals(post.getLink());
     }
 
     @Override
     public int hashCode() {
 
         int result = 1;
-        result = 31 * result + ((title == null) ? 0 : title.hashCode());
-        result = 31 * result + ((description == null) ? 0 : description.hashCode());
-        result = 31 * result + ((created == null) ? 0 : created.hashCode());
+        result = 31 * result + id;
+        result = 31 * result + ((link == null) ? 0 : link.hashCode());
         return result;
     }
 
