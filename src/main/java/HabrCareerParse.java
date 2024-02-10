@@ -14,6 +14,14 @@ public class HabrCareerParse {
     public static final String PREFIX = "/vacancies?page=";
     public static final String SUFFIX = "&q=Java%20developer&type=all";
 
+    private static String retrieveDescription(String link) throws IOException {
+        Connection connection = Jsoup.connect(link);
+        Document document = connection.get();
+        Element row = document.select(".vacancy-description__text").first();
+        String description = row.text();
+        return description;
+    }
+
     public static void main(String[] args) throws IOException {
         for (int pageNumber = 1; pageNumber <= 5; pageNumber++) {
             HabrCareerDateTimeParser timeParser = new HabrCareerDateTimeParser();
