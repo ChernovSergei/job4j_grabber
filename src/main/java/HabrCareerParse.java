@@ -6,7 +6,7 @@ import org.jsoup.select.Elements;
 import utils.HabrCareerDateTimeParser;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public class HabrCareerParse {
 
@@ -25,7 +25,7 @@ public class HabrCareerParse {
                 Element titleElement = row.select(".vacancy-card__title").first();
                 Element dateElement = row.select(".vacancy-card__date").first();
                 String dateString = dateElement.child(0).attr("datetime");
-                LocalDateTime date = timeParser.parse(dateString);
+                OffsetDateTime date = timeParser.parse(dateString);
                 Element linkElement = titleElement.child(0);
                 String vacancyName = titleElement.text();
                 String link = String.format("%s%s", SOURCE_LINK, linkElement.attr("href"));

@@ -1,13 +1,14 @@
 package utils;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
 public class HabrCareerDateTimeParser implements DateTimeParser {
 
     @Override
-    public LocalDateTime parse(String parse) {
-        return LocalDateTime.parse(parse, DateTimeFormatter.ISO_DATE_TIME);
+    public OffsetDateTime parse(String parse) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssz");
+        return OffsetDateTime.parse(parse, formatter);
     }
 }
