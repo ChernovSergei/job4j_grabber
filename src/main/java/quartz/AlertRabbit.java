@@ -15,35 +15,35 @@ import java.sql.Timestamp;
 public class AlertRabbit {
 
     public static void main(String[] args) {
-        Connection connection;
         try (InputStream in = AlertRabbit.class.getClassLoader().getResourceAsStream("db/liquibase.properties")) {
             Properties config = new Properties();
             config.load(in);
             Class.forName(config.getProperty("driver-class-name"));
-            connection = DriverManager.getConnection(
-                    config.getProperty("url"),
-                    config.getProperty("username"),
-                    config.getProperty("password")
-            );
-            Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
-            scheduler.start();
-            JobDataMap data = new JobDataMap();
-            data.put("storeDB", connection);
-            JobDetail job = newJob(Rabbit.class)
-                    .usingJobData(data)
-                    .build();
-            SimpleScheduleBuilder time = simpleSchedule()
-                    .withIntervalInSeconds(Integer.parseInt(getInterval().getProperty("rabbit.interval")))
-                    .repeatForever();
-            Trigger trigger = newTrigger()
-                    .withSchedule(time)
-                    .startNow()
-                    .build();
-            scheduler.scheduleJob(job, trigger);
-            Thread.sleep(Integer.parseInt(getInterval().getProperty("rabbit.sleep_interval")));
-            scheduler.shutdown();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            try (Connection connection = DriverManager.getConnection(
+                config.getProperty("url"),
+                config.getProperty("username"),
+                config.getProperty("password")
+            )) {
+                Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+                scheduler.start();
+                JobDataMap data = new JobDataMap();
+                data.put("storeDB", connection);
+                JobDetail job = newJob(Rabbit.class)
+                        .usingJobData(data)
+                        .build();
+                SimpleScheduleBuilder time = simpleSchedule()
+                        .withIntervalInSeconds(Integer.parseInt(getInterval().getProperty("rabbit.interval")))
+                        .repeatForever();
+                Trigger trigger = newTrigger()
+                        .withSchedule(time)
+                        .startNow()
+                        .build();
+                scheduler.scheduleJob(job, trigger);
+                Thread.sleep(Integer.parseInt(getInterval().getProperty("rabbit.sleep_interval")));
+                scheduler.shutdown();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
