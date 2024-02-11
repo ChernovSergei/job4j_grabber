@@ -5,6 +5,15 @@ public class Post {
     private String title;
     private String link;
     private String description;
+    private LocalDateTime created;
+
+    public Post(int id, String title, String link, String description, LocalDateTime created) {
+        this.id = id;
+        this.title = title;
+        this.link = link;
+        this.description = description;
+        this.created = created;
+    }
 
     public int getId() {
         return id;
@@ -45,8 +54,6 @@ public class Post {
     public void setCreated(LocalDateTime created) {
         this.created = created;
     }
-
-    private LocalDateTime created;
 
     @Override
     public boolean equals(Object o) {
