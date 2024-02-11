@@ -55,10 +55,9 @@ public class HabrCareerParse implements Parse {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            System.out.printf("%s %s %s%n%s", date, vacancyName, descriptionLink, description);
             result.add(new Post(1, vacancyName, descriptionLink, description, date));
         });
-        return null;
+        return result;
     }
 
     public static void main(String[] args) {
@@ -69,6 +68,6 @@ public class HabrCareerParse implements Parse {
             String fullLink = "%s%s%d%s".formatted(SOURCE_LINK, PREFIX, pageNumber, SUFFIX);
             result = habrCareerParse.list(fullLink);
         }
-        System.out.println(result);
+        result.forEach(System.out::println);
     }
 }
