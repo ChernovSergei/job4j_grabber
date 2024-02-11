@@ -1,7 +1,7 @@
 package utils;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 public interface DateTimeParser {
-    OffsetDateTime parse(String parse);
+    LocalDateTime parse(String parse);
 }
