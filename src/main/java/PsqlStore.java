@@ -37,6 +37,7 @@ public class PsqlStore implements Store{
 
     @Override
     public void save(Post post) {
+
         try (PreparedStatement statement = connection.prepareStatement("insert into post(name, description, link, created) values (?, ?, ?, ?) on conflict (link) do update set name = ?, description = ?, created = ?", Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, post.getTitle());
             statement.setString(2, post.getDescription());
