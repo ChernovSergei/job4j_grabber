@@ -55,7 +55,7 @@ public class HabrCareerParse implements Parse {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            result.add(new Post(1, vacancyName, descriptionLink, description, date));
+            result.add(new Post( vacancyName, descriptionLink, description, date));
         });
         return result;
     }
