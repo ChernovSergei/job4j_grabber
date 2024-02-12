@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
-public class PsqlStore implements Store{
+public class PsqlStore implements Store {
 
     private Connection connection;
 
@@ -25,7 +25,7 @@ public class PsqlStore implements Store{
         }
     }
 
-    private void setIdFromDB (ResultSet resultSet, Post post) throws SQLException {
+    private void setIdFromDB(ResultSet resultSet, Post post) throws SQLException {
         int id = -1;
         if (resultSet.next()) {
             id = resultSet.getInt(1);
@@ -96,16 +96,16 @@ public class PsqlStore implements Store{
     }
 
     public static void main(String[] args) {
-        String SOURCE_LINK = "https://career.habr.com";
-        String PREFIX = "/vacancies?page=";
-        String SUFFIX = "&q=Java%20developer&type=all";
+        String sourceLink = "https://career.habr.com";
+        String prefix = "/vacancies?page=";
+        String suffix = "&q=Java%20developer&type=all";
 
         HabrCareerDateTimeParser timeParser = new HabrCareerDateTimeParser();
         HabrCareerParse habrCareerParse = new HabrCareerParse(timeParser);
         List<Post> result = new LinkedList<>();
         PsqlStore store = new PsqlStore(new Properties());
         for (int pageNumber = 1; pageNumber <= 5; pageNumber++) {
-            String fullLink = "%s%s%d%s".formatted(SOURCE_LINK, PREFIX, pageNumber, SUFFIX);
+            String fullLink = "%s%s%d%s".formatted(sourceLink, prefix, pageNumber, suffix);
             result.addAll(habrCareerParse.list(fullLink));
         }
         result.forEach(store::save);
