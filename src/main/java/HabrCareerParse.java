@@ -4,8 +4,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import utils.DateTimeParser;
-import utils.HabrCareerDateTimeParser;
-
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
@@ -58,16 +56,5 @@ public class HabrCareerParse implements Parse {
             result.add(new Post(vacancyName, descriptionLink, description, date));
         });
         return result;
-    }
-
-    public static void main(String[] args) {
-        HabrCareerDateTimeParser timeParser = new HabrCareerDateTimeParser();
-        HabrCareerParse habrCareerParse = new HabrCareerParse(timeParser);
-        List<Post> result = new LinkedList<>();
-        for (int pageNumber = 1; pageNumber <= 5; pageNumber++) {
-            String fullLink = "%s%s%d%s".formatted(SOURCE_LINK, PREFIX, pageNumber, SUFFIX);
-            result = habrCareerParse.list(fullLink);
-        }
-        result.forEach(System.out::println);
     }
 }

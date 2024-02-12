@@ -1,9 +1,6 @@
-import utils.HabrCareerDateTimeParser;
-
 import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
@@ -11,7 +8,7 @@ public class PsqlStore implements Store {
 
     private Connection connection;
 
-    private PsqlStore(Properties config) {
+    PsqlStore(Properties config) {
         try (InputStream input = PsqlStore.class.getResourceAsStream("db/liquibase.properties")) {
             config.load(input);
             Class.forName(config.getProperty("driver-class-name"));
@@ -93,24 +90,5 @@ public class PsqlStore implements Store {
         if (connection != null) {
             connection.close();
         }
-    }
-
-    public static void main(String[] args) {
-        String sourceLink = "https://career.habr.com";
-        String prefix = "/vacancies?page=";
-        String suffix = "&q=Java%20developer&type=all";
-
-        HabrCareerDateTimeParser timeParser = new HabrCareerDateTimeParser();
-        HabrCareerParse habrCareerParse = new HabrCareerParse(timeParser);
-        List<Post> result = new LinkedList<>();
-        PsqlStore store = new PsqlStore(new Properties());
-        for (int pageNumber = 1; pageNumber <= 5; pageNumber++) {
-            String fullLink = "%s%s%d%s".formatted(sourceLink, prefix, pageNumber, suffix);
-            result.addAll(habrCareerParse.list(fullLink));
-        }
-        result.forEach(store::save);
-        store.getAll().forEach(System.out::println);
-        System.out.println();
-        System.out.println(store.findById(1));
     }
 }
