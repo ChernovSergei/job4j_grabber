@@ -1,6 +1,9 @@
+import utils.HabrCareerDateTimeParser;
+
 import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
@@ -32,10 +35,14 @@ public class PsqlStore implements Store {
         }
     }
 
+    private Post createPost(ResultSet resultSet) throws SQLException {
+        return new Post(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(4), resultSet.getString(3), resultSet.getTimestamp(5).toLocalDateTime());
+    }
+
     @Override
     public void save(Post post) {
 
-        try (PreparedStatement statement = connection.prepareStatement("insert into post(name, description, link, created) values (?, ?, ?, ?) on conflict (link) do update set name = ?, description = ?, created = ?", Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = connection.prepareStatement("insert into post(name, description, link, created) values (?, ?, ?, ?) on conflict (link) do nothing", Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, post.getTitle());
             statement.setString(2, post.getDescription());
             statement.setString(3, post.getLink());
@@ -61,7 +68,7 @@ public class PsqlStore implements Store {
         try (PreparedStatement statement = connection.prepareStatement("select * from post")) {
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                result.add(new Post(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(4), resultSet.getString(3), resultSet.getTimestamp(5).toLocalDateTime()));
+                result.add(createPost(resultSet));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,5 +97,24 @@ public class PsqlStore implements Store {
         if (connection != null) {
             connection.close();
         }
+    }
+
+    public static void main(String[] args) {
+        String sourceLink = "https://career.habr.com";
+        String prefix = "/vacancies?page=";
+        String suffix = "&q=Java%20developer&type=all";
+
+        HabrCareerDateTimeParser timeParser = new HabrCareerDateTimeParser();
+        HabrCareerParse habrCareerParse = new HabrCareerParse(timeParser);
+        List<Post> result = new LinkedList<>();
+        PsqlStore store = new PsqlStore(new Properties());
+        for (int pageNumber = 1; pageNumber <= 5; pageNumber++) {
+            String fullLink = "%s%s%d%s".formatted(sourceLink, prefix, pageNumber, suffix);
+            result.addAll(habrCareerParse.list(fullLink));
+        }
+        result.forEach(store::save);
+        store.getAll().forEach(System.out::println);
+        System.out.println();
+        System.out.println(store.findById(1));
     }
 }
