@@ -98,23 +98,4 @@ public class PsqlStore implements Store {
             connection.close();
         }
     }
-
-    public static void main(String[] args) {
-        String sourceLink = "https://career.habr.com";
-        String prefix = "/vacancies?page=";
-        String suffix = "&q=Java%20developer&type=all";
-
-        HabrCareerDateTimeParser timeParser = new HabrCareerDateTimeParser();
-        HabrCareerParse habrCareerParse = new HabrCareerParse(timeParser);
-        List<Post> result = new LinkedList<>();
-        PsqlStore store = new PsqlStore(new Properties());
-        for (int pageNumber = 1; pageNumber <= 5; pageNumber++) {
-            String fullLink = "%s%s%d%s".formatted(sourceLink, prefix, pageNumber, suffix);
-            result.addAll(habrCareerParse.list(fullLink));
-        }
-        result.forEach(store::save);
-        store.getAll().forEach(System.out::println);
-        System.out.println();
-        System.out.println(store.findById(1));
-    }
 }
